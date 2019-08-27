@@ -10,7 +10,7 @@ canvas.pack()
 users = {}      #存客户端信息(用户名 ip port)
 
 
-def run(client_socket):
+def run(client_socket,client_address):
     buf_size = 1024 #服务端缓冲区的大小
     data = client_socket.recv(buf_size)  # 服务端接收数据
     message_recv=data.decode('utf8')    #数据解码
@@ -21,7 +21,8 @@ def run(client_socket):
         data1 = client_socket.recv(buf_size)   #接收客户端传来的消息
         data2 = data1.decode('utf8')  #data2打印出来样式  谁谁 : 消息内容
         info_list = data2.split(':')    #以 : 切分字符串,样式是['谁谁','消息内容']
-        users[info_list[0]].send((message_recv + '说:' + info_list[1]).encode('utf8'))   #把收到的 消息内容 发送出去( 用户名+ 说: 消息内容)
+        name=info_list[0]
+        users[name].send((message_recv + '说:' + info_list[1]).encode('utf8'))   #把收到的 消息内容 发送出去( 用户名+ 说: 消息内容)
 
 def start():
     ip = entry_ip.get()  # 获取ip
@@ -29,14 +30,14 @@ def start():
     address = (ip, int(port))   #封装地址
     server_socket = socket(AF_INET, SOCK_STREAM)
     server_socket.bind(address)  # 绑定ip和端口号
-    server_socket.listen(10)    #开启服务器监听
+    server_socket.listen(5)    #开启服务器监听
     text.insert(INSERT, '服务器启动成功\n')  # 连接消息窗口显示
     while 1:
         # 接收客户端的请求
-        client_socket, client_address = server_socket.accept()
+        client_socket, client_address = server_socket.accept()  #阻塞 同步的
         # 开启一个线程(只要有客户端接入就会开启一个线程)
         if __name__=='__main__':
-            t = Thread(target=run, args=(client_socket,))
+            t = Thread(target=run, args=(client_socket,client_address))
             t.start()
 
 

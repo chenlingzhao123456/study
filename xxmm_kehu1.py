@@ -8,24 +8,24 @@ win.geometry('330x440') #设置窗口大小
 canvas =Canvas(master=win, width=330,height=440,bg='LightYellow')#创建画布设置背景色
 canvas.pack()
 
-client_socket=None         #空值 储存客户端的信息
+client_info=None         #空值 储存客户端的信息
 
 def get_info():
     while 1:
         buf_size = 1024     #服务端缓冲区的大小
-        data=client_socket.recv(buf_size)      #接收服务器发来的信息
+        data=client_info.recv(buf_size)      #接收服务器发来的信息
         text.insert(INSERT,data.decode('utf8'))     #把收到的信息解码 然后显示在信息框上
 
 def connect_server():
-    global client_socket
+    global client_info
     ip=entry_ip.get()       #获取数据
     port=entry_port.get()
     user=entry_user.get()
-    client=socket(AF_INET, SOCK_STREAM) #创建socket对象
+    server_socket=socket(AF_INET, SOCK_STREAM) #创建socket对象
     address = (ip, int(port))   #封装地址
-    client.connect(address)      #连接服务器(ip和端口号)
-    client.send(user.encode('utf8'))    #把获取到的消息编码发送给客户端
-    client_socket=client
+    server_socket.connect(address)      #连接服务器(ip和端口号)
+    server_socket.send(user.encode('utf8'))    #把获取到的消息编码发送给客户端
+    client_info=server_socket
     if __name__=='__main__':
         t=Thread(target=get_info)   #开启线程(任务)
         t.start()
@@ -34,7 +34,7 @@ def send_message(): #发消息
     send_who=entry_send_who.get()   #获取 发给谁 框里的内容
     send_msg=text_send.get('0.0','end') #获取要发的消息  就是显示消息 框里的内容(索引 浮点型)
     send_msg=send_who+':'+send_msg  #把消息重新赋值 格式 (谁:消息)
-    client_socket.send(send_msg.encode('utf8'))  #编码发送
+    client_info.send(send_msg.encode('utf8'))  #编码发送
 
 label_user = Label(master=win, text='用户名',bg='Lightpink')
 label_user.place(x=20, y=20)
