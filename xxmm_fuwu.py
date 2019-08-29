@@ -4,8 +4,8 @@ from threading import Thread
 
 win = Tk()
 win.title('服务端')    #设置标题
-win.geometry('300x400') #设置窗口大小
-canvas =Canvas(master=win, width=300,height=400,bg='LightYellow') #创建画布 设置窗口背景色
+win.geometry('300x260') #设置窗口大小
+canvas =Canvas(master=win, width=300,height=260,bg='LightYellow') #创建画布 设置窗口背景色
 canvas.pack()
 users = {}      #存客户端信息(用户名 ip port)
 
@@ -28,12 +28,12 @@ def start():
     ip = entry_ip.get()  # 获取ip
     port = entry_port.get()  # 获取端口
     address = (ip, int(port))   #封装地址
-    server_socket = socket(AF_INET, SOCK_STREAM)
+    server_socket = socket(AF_INET, SOCK_STREAM)    #创建socket对象
     server_socket.bind(address)  # 绑定ip和端口号
     server_socket.listen(5)    #开启服务器监听
     text.insert(INSERT, '服务器启动成功\n')  # 连接消息窗口显示
     while 1:
-        # 接收客户端的请求
+        # 接收客户端的链接请求
         client_socket, client_address = server_socket.accept()  #阻塞 同步的
         # 开启一个线程(只要有客户端接入就会开启一个线程)
         if __name__=='__main__':
