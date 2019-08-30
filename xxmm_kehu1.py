@@ -1,6 +1,8 @@
 from tkinter import *
 from socket import *
 from threading import Thread
+import time
+
 
 win = Tk()
 win.title('客户端')    #设置标题
@@ -35,6 +37,7 @@ def send_message(): #发消息
     send_msg=text_send.get('0.0','end') #获取要发的消息  就是显示消息 框里的内容(索引 浮点型)
     send_msg=send_who+':'+send_msg  #把消息重新赋值 格式 (谁:消息)
     client_info.send(send_msg.encode('utf8'))  #编码发送
+    text_send.delete('0.0','end')
 
 label_user = Label(master=win, text='用户名',bg='Lightpink')
 label_user.place(x=20, y=20)
